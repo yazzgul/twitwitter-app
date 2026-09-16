@@ -16,7 +16,7 @@
 ## Скриншоты
 
 | Вход | Регистрация |
-|---|---|---|
+|---|---|
 | <img src="docs/media/sign-in-screen.png" width="220"> | <img src="docs/media/sign-up-screen.png" width="220"> |
 
 | Лента | Профиль |
