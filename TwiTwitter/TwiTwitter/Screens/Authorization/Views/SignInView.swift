@@ -32,7 +32,7 @@ struct SignInView: View {
                     }
 
                     ValidatedField(error: authVM.fieldErrors[.password]) {
-                        SecureField("Пароль", text: $password)
+                        SecureField("Password", text: $password)
                             .modifier(FieldStyle())
                             .onChange(of: password) { _, _ in authVM.clearError(for: .password) }
                     }
@@ -45,7 +45,7 @@ struct SignInView: View {
                         if authVM.isLoading {
                             ProgressView().tint(.white)
                         } else {
-                            Text("Войти").fontWeight(.semibold)
+                            Text("Sign In").fontWeight(.semibold)
                         }
                     }
                     .frame(maxWidth: .infinity)
@@ -62,7 +62,7 @@ struct SignInView: View {
                 Button {
                     showSignUp = true
                 } label: {
-                    Text("Нет аккаунта? \(Text("Зарегистрироваться").fontWeight(.bold))")
+                    Text("Don`t have an account? \(Text("Sign Up").fontWeight(.bold))")
                         .foregroundColor(.gray)
                 }
                 .padding(.bottom, 20)

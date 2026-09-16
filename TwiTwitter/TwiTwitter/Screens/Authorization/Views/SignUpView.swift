@@ -18,13 +18,13 @@ struct SignUpView: View {
 
     var body: some View {
         VStack(spacing: 18) {
-            Text("Создать аккаунт")
+            Text("Create an account")
                 .font(.system(size: 28, weight: .bold, design: .rounded))
                 .padding(.top, 40)
 
             VStack(spacing: 14) {
                 ValidatedField(error: authVM.fieldErrors[.username]) {
-                    TextField("Имя пользователя", text: $username)
+                    TextField("Username", text: $username)
                         .modifier(FieldStyle())
                         .onChange(of: username) { _, _ in authVM.clearError(for: .username) }
                 }
@@ -38,13 +38,13 @@ struct SignUpView: View {
                 }
 
                 ValidatedField(error: authVM.fieldErrors[.password]) {
-                    SecureField("Пароль", text: $password)
+                    SecureField("Password", text: $password)
                         .modifier(FieldStyle())
                         .onChange(of: password) { _, _ in authVM.clearError(for: .password) }
                 }
 
                 ValidatedField(error: authVM.fieldErrors[.confirmPassword]) {
-                    SecureField("Повторите пароль", text: $confirmPassword)
+                    SecureField("Password again", text: $confirmPassword)
                         .modifier(FieldStyle())
                         .onChange(of: confirmPassword) { _, _ in authVM.clearError(for: .confirmPassword) }
                 }
@@ -63,7 +63,7 @@ struct SignUpView: View {
                     if authVM.isLoading {
                         ProgressView().tint(.white)
                     } else {
-                        Text("Зарегистрироваться").fontWeight(.semibold)
+                        Text("Sign Up").fontWeight(.semibold)
                     }
                 }
                 .frame(maxWidth: .infinity)

@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 struct Post: Identifiable, Codable {
-    var id: String?
+    @DocumentID var id: String?
     var authorId: String
     var authorUsername: String
     var authorAvatarURL: String?
