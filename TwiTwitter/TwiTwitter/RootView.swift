@@ -13,7 +13,7 @@ struct RootView: View {
     var body: some View {
         Group {
             if authVM.userSession != nil {
-//                переход к MainTabView()
+                MainTabView()
             } else {
                 SignInView()
             }

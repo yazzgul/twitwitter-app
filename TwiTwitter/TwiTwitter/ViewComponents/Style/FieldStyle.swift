@@ -15,3 +15,9 @@ struct FieldStyle: ViewModifier {
             .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 }
+// чтобы упростить дальнейшую запись
+extension View {
+    func authFieldStyle() -> some View {
+        modifier(FieldStyle())
+    }
+}
