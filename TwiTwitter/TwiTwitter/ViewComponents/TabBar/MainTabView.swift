@@ -8,15 +8,24 @@
 import SwiftUI
 
 struct MainTabView: View {
+    @EnvironmentObject var loc: LocalizationManager
+
     var body: some View {
         TabView {
             FeedView()
-                .tabItem { Label("Feed", systemImage: "house.fill") }
+                .tabItem {
+                    Label(loc.localized("tab_feed"), systemImage: "house.fill")
+                }
 
             NavigationStack {
                 UserProfileView()
             }
-            .tabItem { Label("Profile", systemImage: "person.crop.circle") }
+            .tabItem {
+                Label(
+                    loc.localized("tab_profile"),
+                    systemImage: "person.crop.circle"
+                )
+            }
         }
         .tint(.purple)
     }

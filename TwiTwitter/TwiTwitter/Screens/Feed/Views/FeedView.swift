@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct FeedView: View {
 //    только читает из вью модел
     @StateObject var vm = PostsViewModel()
@@ -43,5 +44,6 @@ struct FeedView: View {
             }
         }
         .onAppear { vm.fetchFeed() }
+        .onDisappear { vm.stopObserving() }
     }
 }

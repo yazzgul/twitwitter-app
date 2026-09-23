@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum AuthValidationError: LocalizedError, Equatable {
+enum AuthValidationError: Error, Equatable {
     case emptyUsername
     case invalidEmail
     case weakPassword
@@ -15,24 +15,19 @@ enum AuthValidationError: LocalizedError, Equatable {
 
     var field: AuthField {
         switch self {
-        case .emptyUsername:       return .username
-        case .invalidEmail:        return .email
-        case .weakPassword:        return .password
+        case .emptyUsername: return .username
+        case .invalidEmail: return .email
+        case .weakPassword: return .password
         case .passwordsDoNotMatch: return .confirmPassword
-
         }
     }
 
-    var errorDescription: String? {
+    var localizationKey: String {
         switch self {
-        case .emptyUsername:
-            return "Имя пользователя должно быть от 3 до 30 символов"
-        case .invalidEmail:
-            return "Некорректный email"
-        case .weakPassword:
-            return "Пароль должен быть не короче 8 символов и содержать заглавные, строчные буквы и цифру"
-        case .passwordsDoNotMatch:
-            return "Пароли не совпадают"
+        case .emptyUsername: return "error_empty_username"
+        case .invalidEmail: return "error_invalid_email"
+        case .weakPassword: return "error_weak_password"
+        case .passwordsDoNotMatch: return "error_passwords_mismatch"
         }
     }
 }

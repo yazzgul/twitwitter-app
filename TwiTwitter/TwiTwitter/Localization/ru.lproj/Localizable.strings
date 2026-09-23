@@ -1,0 +1,42 @@
+//
+//  Localizable.strings
+//  TwiTwitter
+//
+//  Created by Язгуль Хасаншина on 23.09.2026.
+//
+
+"sign_in" = "Войти";
+"create_account" = "Создать аккаунт";
+"email_placeholder" = "Email";
+"password_placeholder" = "Пароль";
+"confirm_password_placeholder" = "Повторите пароль";
+"username_placeholder" = "Имя пользователя";
+"no_account_prompt" = "Нет аккаунта? ";
+"sign_up_link" = "Зарегистрироваться";
+
+"tab_feed" = "Лента";
+"tab_profile" = "Профиль";
+
+"new_post_title" = "Новый пост";
+"choose_photo" = "Выбрать фото";
+"caption_placeholder" = "Подпись к посту...";
+"publish" = "Опубликовать";
+"cancel" = "Отмена";
+
+"profile_title" = "Профиль";
+"profile_posts_count" = "%d постов";
+"sign_out" = "Выйти";
+
+"language_settings_title" = "Язык";
+
+"error_empty_username" = "Имя пользователя должно быть от 3 до 30 символов";
+"error_invalid_email" = "Некорректный email";
+"error_weak_password" = "Пароль должен быть не короче 8 символов и содержать заглавные, строчные буквы и цифру";
+"error_passwords_mismatch" = "Пароли не совпадают";
+"error_empty_post" = "Добавьте текст или фото к посту";
+"error_caption_too_long" = "Подпись слишком длинная (максимум 500 символов)";
+"error_post_publish_failed" = "Не удалось опубликовать пост. Попробуйте ещё раз.";
+"error_email_in_use" = "Этот email уже используется";
+"error_wrong_credentials" = "Неверный email или пароль";
+"error_network" = "Нет соединения с интернетом";
+"error_generic" = "Что-то пошло не так. Попробуйте ещё раз.";

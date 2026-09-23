@@ -7,16 +7,14 @@
 
 import Foundation
 
-enum PostValidationError: LocalizedError, Equatable {
+enum PostValidationError: Error, Equatable {
     case emptyPost
     case captionTooLong
 
-    var errorDescription: String? {
+    var localizationKey: String {
         switch self {
-        case .emptyPost:
-            return "Добавьте текст или фото к посту"
-        case .captionTooLong:
-            return "Подпись слишком длинная (максимум \(PostValidator.maxCaptionLength) символов)"
+        case .emptyPost: return "error_empty_post"
+        case .captionTooLong: return "error_caption_too_long"
         }
     }
 }
