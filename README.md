@@ -21,7 +21,7 @@
 
 | Лента | Профиль | Выбор языка |
 |---|---|---|
-| <img src="docs/media/feed-screen.png" width="220"> | <img src="docs/media/profile-screen.png" width="220"> | <img src="docs/media/localization-screen.png" width="220"> |
+| <img src="docs/media/feed-screen.png" width="220"> | <img src="docs/media/localization-screen.png" width="220"> | <img src="docs/media/localization-screen.png" width="220"> |
 
 ## Как запустить проект
 
