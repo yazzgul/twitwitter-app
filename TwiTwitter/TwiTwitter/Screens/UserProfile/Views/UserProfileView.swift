@@ -7,44 +7,48 @@
 
 import SwiftUI
 
+@MainActor
 struct UserProfileView: View {
     @EnvironmentObject var authVM: AuthViewModel
+    @EnvironmentObject var loc: LocalizationManager
+    @StateObject private var vm = UserProfileViewModel()
 
-    /// если userId == nil, показывается профиль текущего пользователя
+//  если nil показываем профиль текущего пользователя
     var userId: String? = nil
-
-    @StateObject var postsVM = PostsViewModel()
-    @StateObject var userVM = UserProfileViewModel()
-    @State private var userPosts: [Post] = []
 
     private var isOwnProfile: Bool {
         userId == nil || userId == authVM.currentUser?.id
     }
 
-    private var displayUser: AppUser? {
-        isOwnProfile ? authVM.currentUser : userVM.user
-    }
-
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                AsyncImage(url: URL(string: displayUser?.avatarURL ?? "")) { img in
+                AsyncImage(url: URL(string: vm.user?.avatarURL ?? "")) { img in
                     img.resizable().scaledToFill()
                 } placeholder: {
                     Circle().fill(Color.gray.opacity(0.3))
-                        .overlay(Image(systemName: "person.fill").foregroundColor(.white))
+                        .overlay(
+                            Image(systemName: "person.fill").foregroundColor(
+                                .white
+                            )
+                        )
                 }
                 .frame(width: 90, height: 90)
                 .clipShape(Circle())
 
-                Text(displayUser?.username ?? "")
+                Text(vm.user?.username ?? "")
                     .font(.title2).fontWeight(.bold)
 
-                Text("\(userPosts.count) posts")
-                    .font(.footnote).foregroundColor(.gray)
+                Text(
+                    String(
+                        format: loc.localized("profile_posts_count"),
+                        vm.posts.count
+                    )
+                )
+                .font(.footnote).foregroundColor(.gray)
 
                 if isOwnProfile {
-                    Button("Sign out", role: .destructive) {
+                    Button(loc.localized("sign_out"), role: .destructive) {
                         authVM.signOut()
                     }
                     .padding(.top, 4)
@@ -52,23 +56,41 @@ struct UserProfileView: View {
 
                 Divider().padding(.top, 8)
 
-                LazyVStack(spacing: 18) {
-                    ForEach(userPosts) { post in
-                        PostCard(post: post)
+                if vm.isLoading {
+                    ProgressView().padding(.top, 24)
+                } else {
+                    LazyVStack(spacing: 18) {
+                        ForEach(vm.posts) { post in
+                            PostCard(post: post)
+                        }
                     }
                 }
             }
             .padding(.top, 24)
         }
-        .navigationTitle(isOwnProfile ? "Profile" : "@\(displayUser?.username ?? "")")
+        .navigationTitle(
+            isOwnProfile
+                ? loc.localized("profile_title") : "@\(vm.user?.username ?? "")"
+        )
         .navigationBarTitleDisplayMode(.inline)
-        .task {
+        .toolbar {
+            if isOwnProfile {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        LanguageSettingsView()
+                    } label: {
+                        Image(systemName: "globe")
+                    }
+                }
+            }
+        }
+        .task(id: userId) {
             let uid = userId ?? authVM.currentUser?.id
             guard let uid else { return }
-            if !isOwnProfile {
-                await userVM.fetchUser(uid: uid)
-            }
-            userPosts = await postsVM.fetchUserPosts(uid: uid)
+            await vm.loadUser(
+                userId: uid,
+                knownUser: isOwnProfile ? authVM.currentUser : nil
+            )
         }
     }
 }

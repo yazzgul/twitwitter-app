@@ -5,9 +5,9 @@
 //  Created by Язгуль Хасаншина on 16.09.2026.
 //
 
-import Foundation
 import Combine
 import FirebaseAuth
+import Foundation
 
 @MainActor
 final class AuthViewModel: ObservableObject {
@@ -19,29 +19,38 @@ final class AuthViewModel: ObservableObject {
 
     private let authService: AuthServiceProtocol
     private let userService: UserServiceProtocol
+    private let loc: LocalizationManager
 
     init(
-        authService: AuthServiceProtocol = AuthService(),
-        userService: UserServiceProtocol = UserService()
+        authService: AuthServiceProtocol? = nil,
+        userService: UserServiceProtocol? = nil,
+        loc: LocalizationManager? = nil
     ) {
-        self.authService = authService
-        self.userService = userService
+        self.authService = authService ?? AuthService()
+        self.userService = userService ?? UserService()
+        self.loc = loc ?? .shared
         self.userSession = Auth.auth().currentUser
+
         Task { await loadCurrentUser() }
     }
 
-    // Sign Up
-
-    func signUp(username: String, email: String, password: String, confirmPassword: String) async {
+    func signUp(
+        username: String,
+        email: String,
+        password: String,
+        confirmPassword: String
+    ) async {
         fieldErrors.removeAll()
 
         do {
             try AuthValidator.validateSignUp(
-                username: username, email: email,
-                password: password, confirmPassword: confirmPassword
+                username: username,
+                email: email,
+                password: password,
+                confirmPassword: confirmPassword
             )
         } catch let error as AuthValidationError {
-            fieldErrors[error.field] = error.errorDescription
+            fieldErrors[error.field] = loc.localized(error.localizationKey)
             return
         } catch {
             return
@@ -51,10 +60,16 @@ final class AuthViewModel: ObservableObject {
         defer { isLoading = false }
 
         do {
-            let firebaseUser = try await authService.createUser(email: email, password: password)
+            let firebaseUser = try await authService.createUser(
+                email: email,
+                password: password
+            )
             let newUser = AppUser(
-                id: firebaseUser.uid, username: username, email: email,
-                avatarURL: nil, createdAt: Date()
+                id: firebaseUser.uid,
+                username: username,
+                email: email,
+                avatarURL: nil,
+                createdAt: Date()
             )
             try userService.createUser(newUser)
             userSession = firebaseUser
@@ -64,15 +79,13 @@ final class AuthViewModel: ObservableObject {
         }
     }
 
-    // Sign In
-
     func signIn(email: String, password: String) async {
         fieldErrors.removeAll()
 
         do {
             try AuthValidator.validateSignIn(email: email, password: password)
         } catch let error as AuthValidationError {
-            fieldErrors[error.field] = error.errorDescription
+            fieldErrors[error.field] = loc.localized(error.localizationKey)
             return
         } catch {
             return
@@ -82,7 +95,10 @@ final class AuthViewModel: ObservableObject {
         defer { isLoading = false }
 
         do {
-            let firebaseUser = try await authService.signIn(email: email, password: password)
+            let firebaseUser = try await authService.signIn(
+                email: email,
+                password: password
+            )
             userSession = firebaseUser
             await loadCurrentUser()
         } catch {
@@ -96,11 +112,9 @@ final class AuthViewModel: ObservableObject {
         currentUser = nil
     }
 
-    /// Сбрасывает ошибку конкретного поля — вызывать при изменении текста в TextField.
     func clearError(for field: AuthField) {
         fieldErrors[field] = nil
     }
-
 
     private func loadCurrentUser() async {
         guard let uid = authService.currentUserID else { return }
@@ -110,22 +124,22 @@ final class AuthViewModel: ObservableObject {
     private func apply(remoteError error: Error, fallbackField: AuthField) {
         let nsError = error as NSError
         guard let code = AuthErrorCode(rawValue: nsError.code) else {
-            fieldErrors[fallbackField] = error.localizedDescription
+            fieldErrors[fallbackField] = loc.localized("error_generic")
             return
         }
         switch code {
         case .emailAlreadyInUse:
-            fieldErrors[.email] = "Этот email уже используется"
+            fieldErrors[.email] = loc.localized("error_email_in_use")
         case .invalidEmail:
-            fieldErrors[.email] = "Некорректный email"
+            fieldErrors[.email] = loc.localized("error_invalid_email")
         case .weakPassword:
-            fieldErrors[.password] = "Пароль слишком простой"
+            fieldErrors[.password] = loc.localized("error_weak_password")
         case .wrongPassword, .userNotFound:
-            fieldErrors[.password] = "Неверный email или пароль"
+            fieldErrors[.password] = loc.localized("error_wrong_credentials")
         case .networkError:
-            fieldErrors[fallbackField] = "Нет соединения с интернетом"
+            fieldErrors[fallbackField] = loc.localized("error_network")
         default:
-            fieldErrors[fallbackField] = error.localizedDescription
+            fieldErrors[fallbackField] = loc.localized("error_generic")
         }
     }
 }
