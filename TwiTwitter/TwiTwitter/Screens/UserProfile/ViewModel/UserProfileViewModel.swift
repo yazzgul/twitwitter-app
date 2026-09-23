@@ -15,6 +15,8 @@ final class UserProfileViewModel: ObservableObject {
 
     private let userService: UserServiceProtocol
 
+    @Published var userPosts: [Post] = []
+
     init(userService: UserServiceProtocol = UserService()) {
         self.userService = userService
     }

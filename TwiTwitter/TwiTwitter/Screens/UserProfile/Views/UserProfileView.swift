@@ -10,12 +10,12 @@ import SwiftUI
 struct UserProfileView: View {
     @EnvironmentObject var authVM: AuthViewModel
 
-    /// если userId == nil, показывается профиль текущего пользователя
+//    если userId == nil, показывается профиль текущего пользователя
     var userId: String? = nil
 
     @StateObject var postsVM = PostsViewModel()
     @StateObject var userVM = UserProfileViewModel()
-    @State private var userPosts: [Post] = []
+//    @State private var userPosts: [Post] = []
 
     private var isOwnProfile: Bool {
         userId == nil || userId == authVM.currentUser?.id
@@ -40,7 +40,7 @@ struct UserProfileView: View {
                 Text(displayUser?.username ?? "")
                     .font(.title2).fontWeight(.bold)
 
-                Text("\(userPosts.count) posts")
+                Text("\(userVM.userPosts.count) posts")
                     .font(.footnote).foregroundColor(.gray)
 
                 if isOwnProfile {
@@ -53,7 +53,7 @@ struct UserProfileView: View {
                 Divider().padding(.top, 8)
 
                 LazyVStack(spacing: 18) {
-                    ForEach(userPosts) { post in
+                    ForEach(userVM.userPosts) { post in
                         PostCard(post: post)
                     }
                 }
@@ -68,7 +68,7 @@ struct UserProfileView: View {
             if !isOwnProfile {
                 await userVM.fetchUser(uid: uid)
             }
-            userPosts = await postsVM.fetchUserPosts(uid: uid)
+            userVM.userPosts = await postsVM.fetchUserPosts(uid: uid)
         }
     }
 }
