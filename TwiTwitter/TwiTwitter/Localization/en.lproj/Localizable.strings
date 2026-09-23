@@ -1,0 +1,42 @@
+//
+//  Localizable.strings
+//  TwiTwitter
+//
+//  Created by Язгуль Хасаншина on 23.09.2026.
+//
+
+"sign_in" = "Sign In";
+"create_account" = "Create Account";
+"email_placeholder" = "Email";
+"password_placeholder" = "Password";
+"confirm_password_placeholder" = "Confirm password";
+"username_placeholder" = "Username";
+"no_account_prompt" = "Don't have an account? ";
+"sign_up_link" = "Sign Up";
+
+"tab_feed" = "Feed";
+"tab_profile" = "Profile";
+
+"new_post_title" = "New Post";
+"choose_photo" = "Choose photo";
+"caption_placeholder" = "Write a caption...";
+"publish" = "Publish";
+"cancel" = "Cancel";
+
+"profile_title" = "Profile";
+"profile_posts_count" = "%d posts";
+"sign_out" = "Sign Out";
+
+"language_settings_title" = "Language";
+
+"error_empty_username" = "Username must be 3 to 30 characters";
+"error_invalid_email" = "Invalid email address";
+"error_weak_password" = "Password must be at least 8 characters with uppercase, lowercase letters and a digit";
+"error_passwords_mismatch" = "Passwords do not match";
+"error_empty_post" = "Add text or a photo to your post";
+"error_caption_too_long" = "Caption is too long (max 500 characters)";
+"error_post_publish_failed" = "Failed to publish the post. Please try again.";
+"error_email_in_use" = "This email is already in use";
+"error_wrong_credentials" = "Incorrect email or password";
+"error_network" = "No internet connection";
+"error_generic" = "Something went wrong. Please try again.";

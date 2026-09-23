@@ -17,8 +17,8 @@ final class PostsViewModel: ObservableObject {
 
     private let postService: PostServiceProtocol
 
-    init(postService: PostServiceProtocol = PostService()) {
-        self.postService = postService
+    init(postService: PostServiceProtocol? = nil) {
+        self.postService = postService ?? PostService()
     }
 
     func fetchFeed() {
@@ -31,7 +31,7 @@ final class PostsViewModel: ObservableObject {
         (try? await postService.fetchUserPosts(uid: uid)) ?? []
     }
 
-    deinit {
+    func stopObserving() {
         postService.stopObservingFeed()
     }
 }

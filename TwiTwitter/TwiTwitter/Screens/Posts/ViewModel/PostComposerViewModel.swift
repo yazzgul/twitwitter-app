@@ -7,34 +7,53 @@
 
 // Для манипуляции с данными постов
 
-import SwiftUI
 import Combine
+import PhotosUI
+import SwiftUI
 
 @MainActor
 final class PostComposerViewModel: ObservableObject {
 
+    @Published var caption: String = ""
+    @Published var selectedImage: UIImage?
     @Published var errorMessage: String?
     @Published var isPosting = false
 
     private let postService: PostServiceProtocol
     private let storageService: StorageServiceProtocol
+    private let loc: LocalizationManager
 
     init(
-        postService: PostServiceProtocol = PostService(),
-        storageService: StorageServiceProtocol = StorageService()
+        postService: PostServiceProtocol? = nil,
+        storageService: StorageServiceProtocol? = nil,
+        loc: LocalizationManager? = nil
     ) {
-        self.postService = postService
-        self.storageService = storageService
+        self.postService = postService ?? PostService()
+        self.storageService = storageService ?? StorageService()
+        self.loc = loc ?? .shared
     }
 
-    /// возвращает true при успехе, по этому флагу view закрывает экран
-    func publish(author: AppUser, caption: String, image: UIImage?) async -> Bool {
+//      логика конвертации PhotosPickerItem в UIImage
+    func loadImage(from item: PhotosPickerItem?) async {
+        guard let item,
+            let data = try? await item.loadTransferable(type: Data.self),
+            let uiImage = UIImage(data: data)
+        else { return }
+        selectedImage = uiImage
+    }
+
+    func publish(author: AppUser) async -> Bool {
         errorMessage = nil
 
         do {
-            try PostValidator.validate(caption: caption, hasImage: image != nil)
+            try PostValidator.validate(
+                caption: caption,
+                hasImage: selectedImage != nil
+            )
+        } catch let error as PostValidationError {
+            errorMessage = loc.localized(error.localizationKey)
+            return false
         } catch {
-            errorMessage = error.localizedDescription
             return false
         }
 
@@ -43,8 +62,11 @@ final class PostComposerViewModel: ObservableObject {
 
         do {
             var imageURL: String?
-            if let image, let data = image.jpegData(compressionQuality: 0.7) {
-                imageURL = try await storageService.uploadPostImage(data).absoluteString
+            if let selectedImage,
+                let data = selectedImage.jpegData(compressionQuality: 0.7)
+            {
+                imageURL = try await storageService.uploadPostImage(data)
+                    .absoluteString
             }
 
             let post = Post(
@@ -58,7 +80,7 @@ final class PostComposerViewModel: ObservableObject {
             try postService.createPost(post)
             return true
         } catch {
-            errorMessage = "Не удалось опубликовать пост. Попробуйте ещё раз."
+            errorMessage = loc.localized("error_post_publish_failed")
             return false
         }
     }

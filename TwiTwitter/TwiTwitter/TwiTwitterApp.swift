@@ -17,16 +17,19 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
 }
 
-
+@MainActor
 @main
 struct TwiTwitterApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject var authVM = AuthViewModel()
+    @StateObject var loc = LocalizationManager.shared
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environmentObject(authVM)
+                .environmentObject(loc)
+                .environment(\.locale, .init(identifier: loc.currentLanguage.rawValue))
         }
     }
 }

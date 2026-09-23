@@ -14,7 +14,8 @@ struct PostCard: View {
         VStack(alignment: .leading, spacing: 10) {
             NavigationLink(value: post.authorId) {
                 HStack {
-                    AsyncImage(url: URL(string: post.authorAvatarURL ?? "")) { phase in
+                    AsyncImage(url: URL(string: post.authorAvatarURL ?? "")) {
+                        phase in
                         switch phase {
                         case .success(let image):
                             image.resizable().scaledToFill()
@@ -34,8 +35,12 @@ struct PostCard: View {
                         Text("@\(post.authorUsername)")
                             .font(.subheadline).fontWeight(.semibold)
                             .foregroundColor(.primary)
-                        Text(post.createdAt.formatted(date: .abbreviated, time: .shortened))
-                            .font(.caption).foregroundColor(.gray)
+                        Text(
+                            post.createdAt,
+                            format: .dateTime.day().month().year().hour()
+                                .minute()
+                        )
+                        .font(.caption).foregroundColor(.gray)
                     }
                     Spacer()
                 }
